@@ -3,6 +3,8 @@ import io.restassured.response.Response;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import static io.restassured.RestAssured.given;
+
 public class APITests {
 
     @Test
@@ -20,5 +22,10 @@ public class APITests {
 
         int statusCode = response.statusCode();
         Assert.assertEquals(statusCode, 200);
+    }
+
+    @Test
+    void testBDDExample(){
+        given().get("https://reqres.in/api/users?page=2").then().statusCode(200);
     }
 }
