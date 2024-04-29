@@ -18,7 +18,6 @@ public class Product {
     public Response response;
     public int responseCode;
     public ResponseBody body;
-    public Response responsePost;
     public JsonObject requestParams;
 
     @Given("the URL of get products endpoint is hit")
