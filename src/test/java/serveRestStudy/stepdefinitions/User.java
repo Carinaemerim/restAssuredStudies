@@ -109,7 +109,46 @@ public class User {
         JsonPath jsonPath = response.jsonPath();
 
         String userName = jsonPath.get("nome");
-        assertEquals(userName, "Melissa Rinaldi");
+        assertEquals(userName, user);
 
+    }
+
+    @When("an inexistent userID is passed on get users by ID endpoint")
+    public void anInexistentUserIDIsPassedOnGetUsersByIDEndpoint() {
+        RequestSpecification httpRequest = RestAssured.given();
+
+        response = httpRequest.get("usuarios/{_id}", "asgaygsyagsyags");
+    }
+
+    @Then("the an error message should be displayed on API")
+    public void theAnErrorMessageShouldBeDisplayedOnAPI() {
+        JsonPath jsonPath = response.jsonPath();
+        responseCode = response.getStatusCode();
+
+        String userName = jsonPath.get("message");
+        assertEquals(userName, "Usuário não encontrado");
+        assertEquals(responseCode, 400);
+    }
+
+    @When("an existent userID is passed on get users by ID endpoint delete")
+    public void anExistentUserIDIsPassedOnGetUsersByIDEndpointDelete() {
+        RequestSpecification httpRequest = RestAssured.given();
+
+        response = httpRequest.get("usuarios/{_id}", "zjfnYe4KD9jUEc7L");
+        responseCode = response.getStatusCode();
+        assertEquals(responseCode, 200);
+    }
+
+    @Then("the existent user should be deleted")
+    public void theExistentUserShouldBeDeleted() {
+        RequestSpecification httpRequest = RestAssured.given();
+
+        response = httpRequest.delete("usuarios/{_id}", "zjfnYe4KD9jUEc7L");
+        responseCode = response.getStatusCode();
+        assertEquals(responseCode, 200);
+
+        JsonPath jsonPath = response.jsonPath();
+        String successMessage = jsonPath.get("message");
+        assertEquals(successMessage, "Registro excluído com sucesso");
     }
 }
