@@ -47,6 +47,8 @@ public class APITests {
     @Test
     void testAuthenticationOauth2Example() {
 
+        //Just example, keys revoked. Search ways to secure the sensitive information
+        //To work again it will be necessary to create a new tenant on authO
         HttpResponse<String> response = Unirest.post("https://dev-wnza4wg8jkyds74f.us.auth0.com/oauth/token")
                 .header("content-type", "application/x-www-form-urlencoded")
                 .body("grant_type=client_credentials&client_id=2CiGnmR70DfBkJcUNE0TNf5BDXEgvGqr&client_secret=zX_OIhkx21o1f5FSJ7WNZwA5pKukmlUy66hJ-HznHtsryDaxSf8tg32Uw9S6912B&audience=https://dev-wnza4wg8jkyds74f.us.auth0.com/api/v2/")
