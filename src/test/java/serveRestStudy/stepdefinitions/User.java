@@ -12,7 +12,6 @@ import org.testng.Assert;
 
 import java.util.List;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.testng.Assert.assertEquals;
 
 public class User {
@@ -21,6 +20,7 @@ public class User {
     public int responseCode;
 
     @Given("the URL of get products endpoint is hit")
+    @Given("the base URL is passed")
     public void theURLOfGetProductsEndpointIsHit() {
         RestAssured.baseURI = "http://fakestoreapi.com";
 
@@ -36,11 +36,6 @@ public class User {
     public void aResponseCodeShouldBeReceived(int arg0) {
         responseCode = response.getStatusCode();
         assertEquals(responseCode, 200);
-    }
-
-    @Given("the base URL is passed")
-    public void theBaseURLIsPassed() {
-        RestAssured.baseURI = "https://serverest.dev";
     }
 
     @When("the get users endpoint is called")
@@ -151,4 +146,6 @@ public class User {
         String successMessage = jsonPath.get("message");
         assertEquals(successMessage, "Registro excluído com sucesso");
     }
+
+
 }
