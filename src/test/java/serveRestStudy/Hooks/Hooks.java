@@ -14,7 +14,6 @@ public class Hooks {
 
     @Test
     public void userLogin(){
-        //add if return 401 should retry
         //should return token to be used by another methods
         //Token will need to be splitted
         JSONObject jsonObj = new JSONObject()

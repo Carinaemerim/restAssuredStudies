@@ -5,12 +5,16 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
+import io.restassured.response.ResponseBody;
 import io.restassured.specification.RequestSpecification;
+import kong.unirest.json.JSONObject;
 import org.testng.Assert;
 
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static org.testng.Assert.assertEquals;
 
@@ -18,11 +22,12 @@ public class User {
 
     public Response response;
     public int responseCode;
+    JSONObject jsonObject = new JSONObject();
 
     @Given("the URL of get products endpoint is hit")
     @Given("the base URL is passed")
     public void theURLOfGetProductsEndpointIsHit() {
-        RestAssured.baseURI = "http://fakestoreapi.com";
+        RestAssured.baseURI = "https://serverest.dev";
 
     }
 
@@ -146,6 +151,62 @@ public class User {
         String successMessage = jsonPath.get("message");
         assertEquals(successMessage, "Registro excluído com sucesso");
     }
+    @When("nome is passed on endpoint body")
+    public void nomeIsPassedOnEndpointBody() {
+        jsonObject.put("nome","Sebastian");
+    }
 
+    @And("email is passed on endpoint body")
+    public void emailIsPassedOnEndpointBody() {
+        int i = 0;
+        jsonObject.put("email","sebastian"+ThreadLocalRandom.current().nextInt()+"@test.com");
 
+    }
+
+    @And("password is passed on endpoint body")
+    public void passwordIsPassedOnEndpointBody() {
+        jsonObject.put("password","12345");
+    }
+
+    @And("administrador is passed on endpoint body")
+    public void administradorIsPassedOnEndpointBody() {
+        jsonObject.put("administrador","true");
+    }
+
+    @And("the endpoint post usuarios is called")
+    public void theEndpointPostUsuariosIsCalled() {
+        ResponseBody response = RestAssured.given()
+                .contentType("application/json")
+                .body(jsonObject.toString())
+                .when()
+                .post("usuarios");
+
+        //request.header("Content-Type", "application/json");
+        //response = request.post("/usuarios");
+        System.out.println(jsonObject);
+
+        String responseBody = response.asString();
+        System.out.println(responseBody);
+
+    }
+
+    @Then("it should return the message {string}")
+    public void itShouldReturnTheMessage(String arg0) {
+    }
+
+    @And("it should return the user ID")
+    public void itShouldReturnTheUserID() {
+    }
+
+    @And("the user ID is returned")
+    public void theUserIDIsReturned() {
+    }
+
+    @And("a userID is passed on get users by ID endpoint")
+    public void aUserIDIsPassedOnGetUsersByIDEndpoint() {
+    }
+
+    @Then("the user informations should be retrieved")
+    public void theUserInformationsShouldBeRetrieved() {
+    }
 }
