@@ -10,15 +10,10 @@ Feature: Create Users using the API
     Then it should return the message "Cadastro realizado com sucesso"
     And it should return the user ID
 
-
   Scenario: Verify that it is not possible to create a new user using the same email
     Given the base URL is passed
-    When nome is passed on endpoint body
-    And email is passed on endpoint body
-    And password is passed on endpoint body
-    And administrador is passed on endpoint body
-    And the endpoint post usuarios is called
-    Then it should return the message "Este email já está sendo utilizado"
+    When an already used email is passed
+    Then it should return the error message "Este email já está sendo utilizado"
 
   Scenario: Verify that it is possible to create a new user using the API and for search it
     Given the base URL is passed

@@ -5,13 +5,13 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.response.ResponseBody;
 import io.restassured.specification.RequestSpecification;
 import kong.unirest.json.JSONObject;
 import org.testng.Assert;
+import serveRestStudy.Hooks.Hooks;
 
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -23,6 +23,8 @@ public class User {
     public Response response;
     public int responseCode;
     JSONObject jsonObject = new JSONObject();
+    ResponseBody responseBody;
+    public String exceptionMessage;
 
     @Given("the URL of get products endpoint is hit")
     @Given("the base URL is passed")
@@ -116,7 +118,6 @@ public class User {
     @When("an inexistent userID is passed on get users by ID endpoint")
     public void anInexistentUserIDIsPassedOnGetUsersByIDEndpoint() {
         RequestSpecification httpRequest = RestAssured.given();
-
         response = httpRequest.get("usuarios/{_id}", "asgaygsyagsyags");
     }
 
@@ -153,6 +154,7 @@ public class User {
     }
     @When("nome is passed on endpoint body")
     public void nomeIsPassedOnEndpointBody() {
+
         jsonObject.put("nome","Sebastian");
     }
 
@@ -165,17 +167,19 @@ public class User {
 
     @And("password is passed on endpoint body")
     public void passwordIsPassedOnEndpointBody() {
+
         jsonObject.put("password","12345");
     }
 
     @And("administrador is passed on endpoint body")
     public void administradorIsPassedOnEndpointBody() {
+
         jsonObject.put("administrador","true");
     }
 
     @And("the endpoint post usuarios is called")
     public void theEndpointPostUsuariosIsCalled() {
-        ResponseBody response = RestAssured.given()
+        responseBody = RestAssured.given()
                 .contentType("application/json")
                 .body(jsonObject.toString())
                 .when()
@@ -183,30 +187,58 @@ public class User {
 
         //request.header("Content-Type", "application/json");
         //response = request.post("/usuarios");
-        System.out.println(jsonObject);
-
-        String responseBody = response.asString();
-        System.out.println(responseBody);
-
     }
 
     @Then("it should return the message {string}")
     public void itShouldReturnTheMessage(String arg0) {
+
+        String responseBodyString = responseBody.asString();
+        Assert.assertTrue(responseBodyString.contains("Cadastro realizado com sucesso"));
     }
 
     @And("it should return the user ID")
     public void itShouldReturnTheUserID() {
+        String responseBodyString = responseBody.asString();
+        Assert.assertTrue(responseBodyString.contains("_id"));
+        System.out.println(responseBodyString);
     }
 
     @And("the user ID is returned")
     public void theUserIDIsReturned() {
+        String responseBodyString = responseBody.asString();
+
+        String id = responseBodyString.substring(5,12);
+
     }
 
     @And("a userID is passed on get users by ID endpoint")
     public void aUserIDIsPassedOnGetUsersByIDEndpoint() {
+
+
     }
 
     @Then("the user informations should be retrieved")
     public void theUserInformationsShouldBeRetrieved() {
+    }
+
+    @When("an already used email is passed")
+    public void anAlreadyUsedEmailIsPassed() {
+        exceptionMessage = null;
+        Hooks hooks = new Hooks();
+
+        try {
+            hooks.createUser();
+            hooks.createUser();
+        } catch (Exception e) {
+            if (e.getMessage().contains("Este email já está sendo usado")) {
+                exceptionMessage = e.getMessage();
+            }
+        }
+    }
+
+    @Then("it should return the error message {string}")
+    public void itShouldReturnTheErrorMessage(String arg0) {
+
+        Assert.assertEquals(exceptionMessage, "Este email já está sendo usado");
     }
 }
