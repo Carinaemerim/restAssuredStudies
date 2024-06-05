@@ -15,7 +15,7 @@ Feature: Create Users using the API
     When an already used email is passed
     Then it should return the error message "Este email já está sendo utilizado"
 
-  Scenario: Verify that it is possible to create a new user using the API and for search it
+  Scenario: Verify that it is possible to create a new user using the API and search for it
     Given the base URL is passed
     When nome is passed on endpoint body
     And email is passed on endpoint body

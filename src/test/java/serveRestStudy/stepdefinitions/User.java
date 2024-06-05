@@ -204,21 +204,26 @@ public class User {
     }
 
     @And("the user ID is returned")
-    public void theUserIDIsReturned() {
-        String responseBodyString = responseBody.asString();
+    public String theUserIDIsReturned() {
+        JsonPath jsonPath = responseBody.jsonPath();
 
-        String id = responseBodyString.substring(5,12);
+        return jsonPath.getJsonObject("_id").toString();
 
     }
 
     @And("a userID is passed on get users by ID endpoint")
     public void aUserIDIsPassedOnGetUsersByIDEndpoint() {
+        RequestSpecification httpRequest = RestAssured.given();
 
-
+        response = httpRequest.get("usuarios/{_id}", theUserIDIsReturned());
     }
 
     @Then("the user informations should be retrieved")
     public void theUserInformationsShouldBeRetrieved() {
+        JsonPath jsonPath = response.jsonPath();
+
+        String userName = jsonPath.get("nome");
+        assertEquals(userName, "Sebastian");
     }
 
     @When("an already used email is passed")
